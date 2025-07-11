@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <title>New Bharat News</title>
+  <style>
+    body { font-family: Arial; background: #f5f5f5; margin: 0; }
+    header { background: #c30000; color: white; text-align: center; padding: 20px; font-size: 24px; }
+    .news-section { padding: 20px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+    .news-card { background: #fff; padding: 15px; width: 300px; box-shadow: 0 0 5px #ccc; border-radius: 5px; }
+    .news-card img { width: 100%; height: 150px; object-fit: cover; }
+    .admin-panel { padding: 20px; background: #fff3f3; }
+    input, textarea { width: 100%; margin-bottom: 10px; padding: 8px; }
+    button { background: #c30000; color: white; padding: 10px 20px; border: none; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header>New Bharat News</header>
+
+  <div class="admin-panel">
+    <h2>नया समाचार जोड़ें</h2>
+    <input id="title" placeholder="Title" />
+    <input id="image" placeholder="Image URL" />
+    <textarea id="content" placeholder="Content"></textarea>
+    <button onclick="addNews()">Add News</button>
+  </div>
+
+  <div class="news-section" id="news-container"></div>
+
+  <script>
+    let newsData = [];
+    fetch('/api/news')
+      .then(res => res.json())
+      .then(data => {
+        newsData = data;
+        renderNews();
+      });
+
+    function renderNews() {
+      const container = document.getElementById('news-container');
+      container.innerHTML = '';
+      newsData.forEach(news => {
+        container.innerHTML += `
+          <div class="news-card">
+            <img src="${news.image}" />
+            <h3>${news.title}</h3>
+            <p>${news.content}</p>
+          </div>`;
+      });
+    }
+
+    function addNews() {
+      const title = document.getElementById('title').value;
+      const image = document.getElementById('image').value;
+      const content = document.getElementById('content').value;
+      fetch('/api/news', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, image, content })
+      }).then(res => res.json()).then(() => location.reload());
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Login</title>
+</head>
+<body>
+  <h2>Login</h2>
+  <form onsubmit="login(event)">
+    <input id="username" placeholder="Username" />
+    <input id="password" type="password" placeholder="Password" />
+    <button type="submit">Login</button>
+  </form>
+  <script>
+    function login(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      }).then(res => res.json()).then(data => {
+        if (data.success) {
+          alert('Login successful'); location.href = '/index.html';
+        } else {
+          alert('Login failed');
+        }
+      });
+    }
+  </script>
+</body>
+</html>
